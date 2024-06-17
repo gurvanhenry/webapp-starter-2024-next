@@ -1,4 +1,4 @@
-import Bats from "@/components/bats/Bats";
+import Bats from "@/views/bats/Bats";
 import Head from "next/head";
 
 export default function BatsPage() {

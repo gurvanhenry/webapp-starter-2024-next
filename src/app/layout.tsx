@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Ubuntu } from "next/font/google";
 import "./globals.css";
+import ReactQueryProvider from "@/lib-client/ReactQueryProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+
+const font = Ubuntu({
+  weight: ["300", "400", "500", "700"],
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Web app starte with next",
@@ -15,7 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={font.className}>
+        <ReactQueryProvider>
+          <div className="max-w-md mx-auto p-4">{children}</div>
+        </ReactQueryProvider>
+      </body>
     </html>
   );
 }

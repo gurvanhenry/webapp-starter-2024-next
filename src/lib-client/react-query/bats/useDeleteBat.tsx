@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-const postBat = async ({ text }: { text: string }) => {
-  const data = await axios.post("/api/bats", { text });
+const deleteBat = async ({ id }: { id: string }) => {
+  const data = await axios.delete(`/api/bats/${id}`);
   return data;
 };
 
-export const useCreateBat = () => {
+export const useDeleteBat = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: postBat,
+    mutationFn: deleteBat,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bats"] });
     },

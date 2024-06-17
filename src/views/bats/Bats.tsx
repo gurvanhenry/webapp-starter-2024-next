@@ -21,15 +21,17 @@ import { Input } from "@/components/input";
 import { Button } from "@/components/button";
 import { useState } from "react";
 import { useCreateBat } from "@/lib-client/react-query/bats/useCreateBat";
+import { useDeleteBat } from "@/lib-client/react-query/bats/useDeleteBat";
 
 export default function Bats() {
   const [batTextAdd, setBatTextAdd] = useState("new-bat ✅");
-  const [batId, setBatId] = useState(0);
+  const [batId, setBatId] = useState(1);
 
-  const { query: queryGetBats } = useBats();
-  const { mutation: muatationCreateBat } = useCreateBat();
+  const { query: queryGet } = useBats();
+  const { mutation: mutationCreate } = useCreateBat();
+  const { mutation: mutationDelete } = useDeleteBat();
 
-  const { isPending, error, data } = queryGetBats;
+  const { isPending, error, data } = queryGet;
 
   const batsItems = data?.data || [];
 
@@ -37,67 +39,46 @@ export default function Bats() {
     <>
       <Heading className="mb-4 text-2xl">Bats</Heading>
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2">
+          <Input
+            type="text"
+            value={batTextAdd}
+            onChange={(x) => setBatTextAdd(x.currentTarget.value)}
+          />
+          <Button
+            disabled={mutationCreate.isPending}
+            onClick={() => {
+              mutationCreate.mutate({ text: batTextAdd });
+            }}
+          >
+            <PlusIcon />
+            Add bat
+          </Button>
+          {mutationCreate.isError && (
+            <Badge color="rose">{mutationCreate.error.message}</Badge>
+          )}
+        </div>
+        <div>
           <div className="flex flex-row gap-2">
             <Input
               className="max-w-48"
-              type="text"
-              value={batTextAdd}
-              onChange={(x) => setBatTextAdd(x.currentTarget.value)}
+              type="number"
+              value={batId}
+              onChange={(x) => setBatId(Number(x.currentTarget.value))}
             />
             <Button
-              disabled={muatationCreateBat.isPending}
+              disabled={mutationDelete.isPending}
               onClick={() => {
-                muatationCreateBat.mutate({ text: batTextAdd });
+                mutationDelete.mutate({ id: String(batId) });
               }}
             >
-              <PlusIcon />
-              Add bat
+              <TrashIcon />
+              Detete a bat
             </Button>
-            {muatationCreateBat.isError && (
-              <Badge color="rose">{muatationCreateBat.error.message}</Badge>
+            {mutationDelete.isError && (
+              <Badge color="rose">{mutationDelete.error.message}</Badge>
             )}
           </div>
-          {/* <div>
-            <div className="flex flex-row gap-2">
-              <Input
-                className="max-w-48"
-                type="number"
-                value={batId}
-                onChange={(x) => setBatId(Number(x.currentTarget.value))}
-              />
-              <Button
-                disabled={mutationDeleteBat.isPending}
-                onClick={() => {
-                  mutationDeleteBat.mutate({ id: String(batId) });
-                }}
-              >
-                <TrashIcon />
-                Detete a bat
-              </Button>
-              {mutationDeleteBat.isError && (
-                <Badge color="rose">{mutationDeleteBat.error.message}</Badge>
-              )}
-            </div>
-          </div>
-          <div>
-            <div>
-              <Button
-                disabled={mutationEditBat.isPending}
-                onClick={() => {
-                  mutationEditBat.mutate({
-                    id: String(batId),
-                    text: batTextAdd,
-                  });
-                }}
-              >
-                <PencilIcon />
-                Patch bat
-              </Button>
-              {mutationEditBat.isError && (
-                <Badge color="rose">{mutationEditBat.error.message}</Badge>
-              )}
-            </div> */}
         </div>
       </div>
       <Divider />

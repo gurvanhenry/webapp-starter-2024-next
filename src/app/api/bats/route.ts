@@ -1,16 +1,12 @@
 import { NextResponse, NextRequest } from "next/server";
-
-const data = [
-  { text: "bat in 🟥", id: 1 },
-  { text: "bat 💽", id: 2 },
-];
+import { BATS_DATA } from "./data";
 
 export async function GET() {
-  return NextResponse.json(data);
+  return NextResponse.json(BATS_DATA);
 }
 
 export async function POST(req: NextRequest) {
   const { text } = await req.json();
-  data.push({ text, id: data.length + 1 });
-  return NextResponse.json({ ok: true });
+  BATS_DATA.push({ text, id: (BATS_DATA.length + 1).toString() });
+  return NextResponse.json({ ok: true }, { status: 201 });
 }
